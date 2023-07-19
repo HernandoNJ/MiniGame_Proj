@@ -6,28 +6,30 @@ using SimpleJSON;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 
 public class RestAPI : MonoBehaviour
 {
-	public string apiUrl;
-	public string newJson;
-	public string newJson2;
-	public Text LevelText;
-	public Text ExpText;
-	public int index;
+
+	public LoadTextureFromURL textureUrlClass;
+	public string textureUrl;
+
+	public string pokeApiUrl;
 
 	public Pokemon pokemon;
+	public Text LevelText;
+	public Text ExpText;
 
 	private void Start()
 	{
-		apiUrl = "https://pokeapi.co/api/v2/pokemon/35/";
+		pokeApiUrl = "https://pokeapi.co/api/v2/pokemon/25/";
 
 		StartCoroutine(nameof(GetData));
 	}
 
 	private IEnumerator GetData()
 	{
-		using (UnityWebRequest request = UnityWebRequest.Get(apiUrl))
+		using (UnityWebRequest request = UnityWebRequest.Get(pokeApiUrl))
 		{
 			yield return request.SendWebRequest();
 
@@ -37,16 +39,24 @@ public class RestAPI : MonoBehaviour
 			}
 			else
 			{
-				var jsonText= request.downloadHandler.text;
+				var jsonText = request.downloadHandler.text;
 				Pokemon pokemon1 = JsonUtility.FromJson<Pokemon>(jsonText);
 
-				Debug.Log(pokemon1.abilities);
+				Debug.Log("name: " + pokemon1.name);
 				Debug.Log("base experience: " + pokemon1.base_experience);
 				Debug.Log("id: " + pokemon1.id);
 				Debug.Log("is default: " + pokemon1.is_default);
+				Debug.Log("sprites: " + pokemon1.sprites.back_default);
+				textureUrl = pokemon1.sprites.front_default;
 			}
 		}
+
+		textureUrlClass.GetNewImage(textureUrl);
+
+		// Dispose();
 	}
+
+	//public void Dispose() => Destroy(texture2);// memory released, leak otherwise
 }
 
 [Serializable]
