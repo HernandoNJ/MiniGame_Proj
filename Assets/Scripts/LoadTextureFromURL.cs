@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 public class LoadTextureFromURL : MonoBehaviour
 {
 
-	public Texture2D texture2DFromUrl;
+	public Texture2D texture2DFromUrl1;
 
 	public void GetNewImage(string textureUrl)
 	{
@@ -23,8 +23,8 @@ public class LoadTextureFromURL : MonoBehaviour
 		else
 		{
 			var newTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-			texture2DFromUrl = newTexture;
-			gameObject.GetComponent<Renderer>().material.mainTexture = texture2DFromUrl;
+			texture2DFromUrl1 = newTexture;
+			
 		}
 	}
 }
