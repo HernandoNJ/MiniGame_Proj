@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 2409055024454487268}
   - component: {fileID: 432935764129272784}
   - component: {fileID: 5453945384928491024}
+  - component: {fileID: 896458149500114171}
   m_Layer: 5
   m_Name: PokePanel
   m_TagString: Untagged
@@ -164,9 +165,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5460866067901964318}
   - {fileID: 5407721083353148792}
   - {fileID: 7628554469712907469}
+  - {fileID: 5460866067901964318}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -212,6 +213,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &896458149500114171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832398212473068644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 533fb51162fc33e41ace6d30da2a21af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pokePanelName: {fileID: 7841905984509093758}
+  pokePanelExp: {fileID: 8446583386387542552}
+  pokePanelImage: {fileID: 6335999108375556205}
 --- !u!1 &6284861279374214985
 GameObject:
   m_ObjectHideFlags: 0
