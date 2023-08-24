@@ -4,8 +4,7 @@ using UnityEngine.UI;
 
 public class PokePanel : MonoBehaviour
 {
-	public TextMeshProUGUI pokePanelName; 
-	public TextMeshProUGUI pokePanelExp; 
-	public RawImage pokePanelImage; 
-
+	public TextMeshProUGUI pokePanelName;
+	public TextMeshProUGUI pokePanelExp;
+	public RawImage pokePanelImage;
 }
