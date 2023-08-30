@@ -5,11 +5,9 @@ public class CanvasParentsHandler : MonoBehaviour
 {
 	public List<GameObject> pokePanelsList;
 	public ButtonHandler buttonsHandler;
+	public int initialPanelIndex;
+	public int lastPanelIndex;
 	public int currentPanelIndex;
-	public int nextPanelIndex;
-	public int previousPanelIndex;
-	public bool isFirstPanel;
-	public bool isLastPanel;
 
 	private void Start()
 	{
@@ -26,23 +24,8 @@ public class CanvasParentsHandler : MonoBehaviour
 			else pokePanelsList[i].SetActive(false);
 		}
 
-		if (currentPanelIndex == 0)
-		{
-			isFirstPanel = true;
-			isLastPanel = false;
-			buttonsHandler.EnableButtons(false, true);
-		}
-		else if (currentPanelIndex == 5)
-		{
-			isFirstPanel = false;
-			isLastPanel = true;
-			buttonsHandler.EnableButtons(true, false);
-		}
-		else
-		{
-			isFirstPanel = true;
-			isLastPanel = true;
-			buttonsHandler.EnableButtons(true, true);
-		}
+		if (currentPanelIndex == 0) buttonsHandler.EnableButtons(false, true);
+		else if (currentPanelIndex == 2) buttonsHandler.EnableButtons(true, false);
+		else buttonsHandler.EnableButtons(true, true);
 	}
 }

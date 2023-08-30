@@ -50,7 +50,7 @@ public class RestAPI : MonoBehaviour
 		// offset + 1 + results[299] 
 		Debug.Log("result 300 url: " + pokeApiObjs.results[299].url); 
 		
-		for (int i = 1; i < 50; i++)
+		for (int i = 0; i < 100; i++)
 		{
 			using (UnityWebRequest request = UnityWebRequest.Get(pokeApiObjs.results[i].url))
 			{
@@ -72,9 +72,10 @@ public class RestAPI : MonoBehaviour
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
+
 		}
 
-		for (int i = 51; i < 100; i++)
+		for (int i = 101; i < 200; i++)
 		{
 			using (UnityWebRequest request = UnityWebRequest.Get(pokeApiObjs.results[i].url))
 			{
@@ -99,7 +100,7 @@ public class RestAPI : MonoBehaviour
 		}
 
 
-		for (int i = 101; i < 150; i++)
+		for (int i = 201; i < 300; i++)
 		{
 			using (UnityWebRequest request = UnityWebRequest.Get(pokeApiObjs.results[i].url))
 			{
@@ -117,81 +118,6 @@ public class RestAPI : MonoBehaviour
 			}
 
 			Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[2].transform);
-
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
-		}
-
-
-		for (int i = 151; i < 200; i++)
-		{
-			using (UnityWebRequest request = UnityWebRequest.Get(pokeApiObjs.results[i].url))
-			{
-				yield return request.SendWebRequest();
-
-				pokemonFromApi = JsonUtility.FromJson<Pokemon>(request.downloadHandler.text);
-				var rawImageUrl = pokemonFromApi.sprites.front_default;
-
-				using (UnityWebRequest rawImagerequest = UnityWebRequestTexture.GetTexture(rawImageUrl))
-				{
-					yield return rawImagerequest.SendWebRequest();
-
-					newPokeTexture = ((DownloadHandlerTexture)rawImagerequest.downloadHandler).texture;
-				}
-			}
-
-			Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[3].transform);
-
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
-		}
-
-
-		for (int i = 201; i < 250; i++)
-		{
-			using (UnityWebRequest request = UnityWebRequest.Get(pokeApiObjs.results[i].url))
-			{
-				yield return request.SendWebRequest();
-
-				pokemonFromApi = JsonUtility.FromJson<Pokemon>(request.downloadHandler.text);
-				var rawImageUrl = pokemonFromApi.sprites.front_default;
-
-				using (UnityWebRequest rawImagerequest = UnityWebRequestTexture.GetTexture(rawImageUrl))
-				{
-					yield return rawImagerequest.SendWebRequest();
-
-					newPokeTexture = ((DownloadHandlerTexture)rawImagerequest.downloadHandler).texture;
-				}
-			}
-
-			Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[4].transform);
-
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
-		}
-
-
-		for (int i = 251; i < 300; i++)
-		{
-			using (UnityWebRequest request = UnityWebRequest.Get(pokeApiObjs.results[i].url))
-			{
-				yield return request.SendWebRequest();
-
-				pokemonFromApi = JsonUtility.FromJson<Pokemon>(request.downloadHandler.text);
-				var rawImageUrl = pokemonFromApi.sprites.front_default;
-
-				using (UnityWebRequest rawImagerequest = UnityWebRequestTexture.GetTexture(rawImageUrl))
-				{
-					yield return rawImagerequest.SendWebRequest();
-
-					newPokeTexture = ((DownloadHandlerTexture)rawImagerequest.downloadHandler).texture;
-				}
-			}
-
-			Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[5].transform);
 
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
