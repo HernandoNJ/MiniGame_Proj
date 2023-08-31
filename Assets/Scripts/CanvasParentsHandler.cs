@@ -5,6 +5,7 @@ public class CanvasParentsHandler : MonoBehaviour
 {
 	public List<GameObject> pokePanelsList;
 	public ButtonHandler buttonsHandler;
+	public ObjectsToView objectsToView;
 	public int initialPanelIndex;
 	public int lastPanelIndex;
 	public int currentPanelIndex;
@@ -20,7 +21,11 @@ public class CanvasParentsHandler : MonoBehaviour
 	{
 		for (int i = 0; i < pokePanelsList.Count; i++)
 		{
-			if (i == currentPanelIndex) pokePanelsList[i].SetActive(true);
+			if (i == currentPanelIndex)
+			{
+				pokePanelsList[i].SetActive(true);
+				objectsToView.SetCurrentPokeList(i);
+			}
 			else pokePanelsList[i].SetActive(false);
 		}
 

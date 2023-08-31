@@ -17,6 +17,8 @@ public class RestAPI : MonoBehaviour
 	public PokeApiObj pokeApiObjs;
 	public Pokemon pokemonFromApi;
 
+	public ObjectsToView objectsToView;
+
 	private void Start()
 	{
 		pokeApiV2Url = "https://pokeapi.co/api/v2/pokemon?offset=300&limit=300";
@@ -73,6 +75,8 @@ public class RestAPI : MonoBehaviour
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
 
+			objectsToView.AddItemToPokeCardsList(pokePanelPrefab,0);
+
 		}
 
 		for (int i = 101; i < 200; i++)
@@ -97,6 +101,8 @@ public class RestAPI : MonoBehaviour
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
+
+			objectsToView.AddItemToPokeCardsList(pokePanelPrefab, 1);
 		}
 
 
@@ -122,6 +128,8 @@ public class RestAPI : MonoBehaviour
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
+
+			objectsToView.AddItemToPokeCardsList(pokePanelPrefab, 2);
 		}
 
 		StopAllCoroutines();

@@ -3,22 +3,46 @@ using UnityEngine;
 
 public class ObjectsToView : MonoBehaviour
 {
-	public int currentPanel;
-	public CanvasParentsHandler canvasParentsHandler;
-	public List<PokePanel> pokemonCards;
+	public List<GameObject> pokeCardsList0;
+	public List<GameObject> pokeCardsList1;
+	public List<GameObject> pokeCardsList2;
 
-	public void SetCurrentPanel(int activePanelInt)
+	public int currentPokeList;
+
+	public void AddItemToPokeCardsList(GameObject pokeObj, int listNumber)
 	{
-		currentPanel = activePanelInt;
-		//canvasParentsHandler.pokePanelsList[]
-		//activePokeList[currentPanel].SetActive(true);
+		if (listNumber == 0) pokeCardsList0.Add(pokeObj);
+		else if (listNumber == 1) pokeCardsList1.Add(pokeObj);
+		else if (listNumber == 2) pokeCardsList2.Add(pokeObj);
 	}
+
+	public void SetCurrentPokeList(int n) => currentPokeList = n;
 
 	public void SetVisiblePokemons(int count)
 	{
-		//for (int i = 0; i < activePokeList.Count; i++)
-		//{
-
-		//}
+		if (currentPokeList == 0)
+		{
+			for (int i = 0; i < pokeCardsList0.Count; i++)
+			{
+				if (i < count) pokeCardsList0[i].SetActive(true);
+				else pokeCardsList0[i].SetActive(false);
+			}
+		}
+		else if (currentPokeList == 1)
+		{
+			for (int i = 0; i < pokeCardsList1.Count; i++)
+			{
+				if (i < count) pokeCardsList1[i].SetActive(true);
+				else pokeCardsList1[i].SetActive(false);
+			}
+		}
+		else if (currentPokeList == 2)
+		{
+			for (int i = 0; i < pokeCardsList2.Count; i++)
+			{
+				if (i < count) pokeCardsList2[i].SetActive(true);
+				else pokeCardsList2[i].SetActive(false);
+			}
+		}
 	}
 }
