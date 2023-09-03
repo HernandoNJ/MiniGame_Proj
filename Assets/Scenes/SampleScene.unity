@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 129775893}
   - component: {fileID: 129775892}
   m_Layer: 5
-  m_Name: ParentHandler_1
+  m_Name: ParentHandler_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -176,6 +176,7 @@ MonoBehaviour:
   panelIndex: 1
   isFirst: 0
   isLast: 0
+  pokemonsList: []
 --- !u!114 &129775893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1158,17 +1159,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 742026057}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 559855135}
-  m_Father: {fileID: 1778230654}
+  m_Father: {fileID: 1055709223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -20.299988}
+  m_AnchoredPosition: {x: -565, y: -280.3}
   m_SizeDelta: {x: 70, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &742026059
@@ -1215,9 +1216,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1778230655}
-        m_TargetAssemblyTypeName: ObjectsToView, Assembly-CSharp
-        m_MethodName: SetVisiblePokemons
+      - m_Target: {fileID: 1384670846}
+        m_TargetAssemblyTypeName: CanvasParentsHandler, Assembly-CSharp
+        m_MethodName: EnablePokemonsList
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1455,6 +1456,10 @@ RectTransform:
   m_Children:
   - {fileID: 428940198}
   - {fileID: 698123854}
+  - {fileID: 1685890429}
+  - {fileID: 1339639002}
+  - {fileID: 742026058}
+  - {fileID: 2103382384}
   m_Father: {fileID: 1384670845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1627,7 +1632,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokeApiV2Url: 
   pokePanelPrefab: {fileID: 1832398212473068644, guid: 2bd04e8e9891daa45925879e72cdefad, type: 3}
-  canvasParentsHandler: {fileID: 1384670846}
   newPokeTexture: {fileID: 0}
   pokemonFromApi:
     id: 0
@@ -1658,7 +1662,9 @@ MonoBehaviour:
       url: 
     stats: []
     types: []
-  objectsToView: {fileID: 1778230655}
+  parentHandler1: {fileID: 2525183145661837726}
+  parentHandler2: {fileID: 129775892}
+  parentHandler3: {fileID: 1598678839}
 --- !u!4 &1266096089
 Transform:
   m_ObjectHideFlags: 0
@@ -1836,17 +1842,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339639001}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1242095775}
-  m_Father: {fileID: 1778230654}
+  m_Father: {fileID: 1055709223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 19.700012}
+  m_AnchoredPosition: {x: -565, y: -240.29999}
   m_SizeDelta: {x: 70, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1339639003
@@ -1893,9 +1899,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1778230655}
-        m_TargetAssemblyTypeName: ObjectsToView, Assembly-CSharp
-        m_MethodName: SetVisiblePokemons
+      - m_Target: {fileID: 1384670846}
+        m_TargetAssemblyTypeName: CanvasParentsHandler, Assembly-CSharp
+        m_MethodName: EnablePokemonsList
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1995,12 +2001,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 590d2dccd3565a34bbf93396bc5d6eba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pokePanelsList:
-  - {fileID: 6736599160101525192}
-  - {fileID: 129775890}
-  - {fileID: 1598678837}
+  parentsHandlerList: []
   buttonsHandler: {fileID: 428940202}
-  objectsToView: {fileID: 1778230655}
   initialPanelIndex: 0
   lastPanelIndex: 2
   currentPanelIndex: 0
@@ -2099,7 +2101,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1384670845}
-  - {fileID: 1778230654}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2253,7 +2254,7 @@ GameObject:
   - component: {fileID: 1598678840}
   - component: {fileID: 1598678839}
   m_Layer: 5
-  m_Name: ParentHandler_2
+  m_Name: ParentHandler_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2294,6 +2295,7 @@ MonoBehaviour:
   panelIndex: 2
   isFirst: 0
   isLast: 1
+  pokemonsList: []
 --- !u!114 &1598678840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2344,17 +2346,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1685890428}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 459535739}
-  m_Father: {fileID: 1778230654}
+  m_Father: {fileID: 1055709223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 59.7}
+  m_AnchoredPosition: {x: -565, y: -200.3}
   m_SizeDelta: {x: 70, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1685890430
@@ -2401,9 +2403,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1778230655}
-        m_TargetAssemblyTypeName: ObjectsToView, Assembly-CSharp
-        m_MethodName: SetVisiblePokemons
+      - m_Target: {fileID: 1384670846}
+        m_TargetAssemblyTypeName: CanvasParentsHandler, Assembly-CSharp
+        m_MethodName: EnablePokemonsList
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2585,62 +2587,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1719671450}
   m_CullTransparentMesh: 1
---- !u!1 &1778230653
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1778230654}
-  - component: {fileID: 1778230655}
-  m_Layer: 5
-  m_Name: ObjectsToView
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1778230654
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1778230653}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1685890429}
-  - {fileID: 1339639002}
-  - {fileID: 742026058}
-  - {fileID: 2103382384}
-  m_Father: {fileID: 1461502262}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 10, y: 10}
-  m_SizeDelta: {x: 130, y: 180}
-  m_Pivot: {x: 0, y: 0}
---- !u!114 &1778230655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1778230653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05b1fdf3c9b2bdd47b3dd942fbca401b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pokeCardsList1: []
-  pokeCardsList2: []
-  pokeCardsList3: []
-  currentPokeList: 0
 --- !u!1 &2103382383
 GameObject:
   m_ObjectHideFlags: 0
@@ -2667,17 +2613,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2103382383}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1719671451}
-  m_Father: {fileID: 1778230654}
+  m_Father: {fileID: 1055709223}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -60.299988}
+  m_AnchoredPosition: {x: -565, y: -320.3}
   m_SizeDelta: {x: 70, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2103382385
@@ -2724,9 +2670,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1778230655}
-        m_TargetAssemblyTypeName: ObjectsToView, Assembly-CSharp
-        m_MethodName: SetVisiblePokemons
+      - m_Target: {fileID: 1384670846}
+        m_TargetAssemblyTypeName: CanvasParentsHandler, Assembly-CSharp
+        m_MethodName: EnablePokemonsList
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2923,6 +2869,7 @@ MonoBehaviour:
   panelIndex: 0
   isFirst: 1
   isLast: 0
+  pokemonsList: []
 --- !u!114 &4261136087364467425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2959,7 +2906,7 @@ GameObject:
   - component: {fileID: 4261136087364467425}
   - component: {fileID: 2525183145661837726}
   m_Layer: 5
-  m_Name: ParentHandler_0
+  m_Name: ParentHandler_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

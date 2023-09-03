@@ -10,14 +10,15 @@ public class RestAPI : MonoBehaviour
 	public string pokeApiV2Url;
 
 	public GameObject pokePanelPrefab;
-	public CanvasParentsHandler canvasParentsHandler;
 	
 	public Texture2D newPokeTexture;
 
 	public PokeApiObj pokeApiObjs;
 	public Pokemon pokemonFromApi;
 
-	public ObjectsToView objectsToView;
+	public ParentHandler parentHandler1;
+	public ParentHandler parentHandler2;
+	public ParentHandler parentHandler3;
 
 	private void Start()
 	{
@@ -35,7 +36,7 @@ public class RestAPI : MonoBehaviour
 			if (request.result == UnityWebRequest.Result.Success)
 			{
 				// request.downloadHandler.text converts the request into text (Json)
-				// DeserializeObject<Fact> converts the text into a Fact object
+				// DeserializeObject<Fact> converts the text into a <Type> object
 				pokeApiObjs = JsonConvert.DeserializeObject<PokeApiObj>(request.downloadHandler.text);
 			}
 			else Debug.LogError("Error when trying to ge info from web request");
@@ -69,13 +70,15 @@ public class RestAPI : MonoBehaviour
 				}
 			}
 
-			Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[0].transform);
+			//var newPokemon = Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[0].transform);
 
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
-			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
+			var newPokemon = Instantiate(pokePanelPrefab, parentHandler1.transform);
 
-			objectsToView.AddItemToPokeCardsList(pokePanelPrefab,0);
+			newPokemon.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
+			newPokemon.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
+			newPokemon.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
+
+			parentHandler1.AddPokemonToList(newPokemon);
 
 		}
 
@@ -96,13 +99,15 @@ public class RestAPI : MonoBehaviour
 				}
 			}
 
-			Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[1].transform);
+			//var newPokemon = Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[0].transform);
+
+			var newPokemon = Instantiate(pokePanelPrefab, parentHandler2.transform);
 
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
 
-			objectsToView.AddItemToPokeCardsList(pokePanelPrefab, 1);
+			parentHandler2.AddPokemonToList(newPokemon);
 		}
 
 
@@ -123,13 +128,15 @@ public class RestAPI : MonoBehaviour
 				}
 			}
 
-			Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[2].transform);
+			//var newPokemon = Instantiate(pokePanelPrefab, canvasParentsHandler.pokePanelsList[0].transform);
+
+			var newPokemon = Instantiate(pokePanelPrefab, parentHandler3.transform);
 
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelName.text = pokemonFromApi.name;
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelExp.text = pokemonFromApi.base_experience.ToString();
 			pokePanelPrefab.GetComponent<PokePanel>().pokePanelImage.texture = newPokeTexture;
 
-			objectsToView.AddItemToPokeCardsList(pokePanelPrefab, 2);
+			parentHandler3.AddPokemonToList(newPokemon);
 		}
 
 		StopAllCoroutines();
