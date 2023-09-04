@@ -11,7 +11,6 @@ public class ParentHandler : MonoBehaviour
 	public void AddPokemonToList(GameObject obj)
 	{
 		pokemonsList.Add(obj);
-		obj.SetActive(true);
 	}
 
 	public void EnablePokemons(int count)
