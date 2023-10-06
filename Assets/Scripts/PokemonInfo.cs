@@ -10,9 +10,5 @@ public class PokemonInfo : MonoBehaviour
 
 	public static event System.Action<string, RawImage> OnSetPokemonCardData;
 
-	public void SetPokemonCardData()
-	{
-		OnSetPokemonCardData?.Invoke(nameText.text, image);
-		Debug.Log("set pokemon data called");
-	}
+	public void SetPokemonCardData() => OnSetPokemonCardData?.Invoke(nameText.text, image);
 }

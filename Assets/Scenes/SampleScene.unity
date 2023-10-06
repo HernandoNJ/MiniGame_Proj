@@ -1890,21 +1890,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokeApiV2Url: 
   pokeInfoPrefab: {fileID: 1832398212473068644, guid: 2bd04e8e9891daa45925879e72cdefad, type: 3}
+  newPokemon: {fileID: 0}
   newPokeTexture: {fileID: 0}
   pokemonFromApi:
-    id: 0
-    name: 
-    base_experience: 0
-    height: 0
-    is_default: 0
-    order: 0
-    weight: 0
     abilities: []
+    base_experience: 0
     forms: []
     game_indices: []
+    height: 0
     held_items: []
+    id: 0
+    is_default: 0
     location_area_encounters: 
     moves: []
+    name: 
+    order: 0
     past_types: []
     sprites:
       front_default: 
@@ -1915,14 +1915,13 @@ MonoBehaviour:
       back_shiny: 
       back_female: 
       back_shiny_female: 
-    species:
-      name: 
-      url: 
     stats: []
     types: []
-  parentHandler1: {fileID: 2525183145661837726}
-  parentHandler2: {fileID: 129775892}
-  parentHandler3: {fileID: 1598678839}
+    weight: 0
+  parentHandlers:
+  - {fileID: 2525183145661837726}
+  - {fileID: 129775892}
+  - {fileID: 1598678839}
 --- !u!4 &1266096089
 Transform:
   m_ObjectHideFlags: 0
