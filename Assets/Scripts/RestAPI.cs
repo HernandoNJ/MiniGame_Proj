@@ -8,6 +8,7 @@ namespace Pokemon.API
 	public class RestAPI : MonoBehaviour
 	{
 		public string pokeApiV2Url;
+		public int[] itemsCountArray;
 
 		public GameObject pokeInfoPrefab;
 		public GameObject newPokemon;
@@ -29,6 +30,8 @@ namespace Pokemon.API
 
 		private void Start()
 		{
+
+			
 			pokeApiV2Url = "https://pokeapi.co/api/v2/pokemon?offset=300&limit=300";
 			//pokeApiV2Url = "https://pokeapi.co/api/v2/pokemon/ditto";
 
@@ -78,9 +81,9 @@ namespace Pokemon.API
 
 			if (i == 0) newPokemon.GetComponent<PokemonInfo>().SetPokemonCardData();
 
-			if (i < 100) SetParentHandler(0);
-			else if (i < 200) SetParentHandler(1); 
-			else if (i < 300) SetParentHandler(2);
+			if (i < itemsCountArray[0]) SetParentHandler(0);
+			else if (i < itemsCountArray[1]) SetParentHandler(1); 
+			else if (i < itemsCountArray[2]) SetParentHandler(2);
 
 			void SetParentHandler(int index)
 			{
