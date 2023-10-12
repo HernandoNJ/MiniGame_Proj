@@ -1889,6 +1889,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokeApiV2Url: 
+  pokeStringUrl: 
+  pokeMaxCount: 300
   itemsCountArray: 64000000c80000002c010000
   pokeInfoPrefab: {fileID: 1832398212473068644, guid: 2bd04e8e9891daa45925879e72cdefad, type: 3}
   newPokemon: {fileID: 0}
