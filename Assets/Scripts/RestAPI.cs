@@ -19,8 +19,9 @@ namespace Pokemon.API
 
 		public PokeApiObj pokeApiObjs;
 		public Pokemon pokemonFromApi;
-		public PokemonSpecies pokemonSpecies1 = new();
-		public EvolutionChain evolutionChain = new();
+		public PokemonSpecies pokemonSpecies1;
+		public EvolutionChain evolutionChain;
+		public EvolutionChainRoot evolutionChainRoot;
 		public ParentHandler[] parentHandlers = new ParentHandler[3];
 
 		private void Start()
@@ -50,6 +51,12 @@ namespace Pokemon.API
 
 					pokemonFromApi = JsonUtility.FromJson<Pokemon>(request.downloadHandler.text);
 
+
+
+					//pokeSpeciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + pokemonFromApi.id;
+
+
+
 					var rawImageUrl = pokemonFromApi.sprites.front_default;
 					using UnityWebRequest rawImagerequest = UnityWebRequestTexture.GetTexture(rawImageUrl);
 					yield return rawImagerequest.SendWebRequest();
@@ -64,24 +71,46 @@ namespace Pokemon.API
 					yield return request1.SendWebRequest();
 					pokemonSpecies1 = JsonConvert.DeserializeObject<PokemonSpecies>(request1.downloadHandler.text);
 					pokeEvolutionChainUrl = pokemonSpecies1.evolution_chain.url;
+					Debug.Log("evol chain url: " + pokeEvolutionChainUrl);
+
+					//using UnityWebRequest evolChainReq = UnityWebRequest.Get(pokeEvolutionChainUrl);
+					
 				}
 
+				using (UnityWebRequest evolChainReq = UnityWebRequest.Get(pokeEvolutionChainUrl))
+				{
+					yield return evolChainReq.SendWebRequest();
+					var abc = evolChainReq.downloadHandler.text;
+					Debug.Log("abc: " + abc);
+					evolutionChainRoot = JsonUtility.FromJson<EvolutionChainRoot>(evolChainReq.downloadHandler.text);
+					Debug.Log("evol chain root id: " + evolutionChainRoot.id); ;
+					Debug.Log("evol chain root: " + evolutionChainRoot.chain);
+				}
 
-				//using (UnityWebRequest request2 = UnityWebRequest.Get(pokeEvolutionChainUrl))
-				//{
-				//	yield return request2.SendWebRequest();
-				//	pokemonSpecies1 = JsonConvert.DeserializeObject<PokemonSpecies>(request2.downloadHandler.text);
-				//	pokeEvolutionChainUrl = pokemonSpecies1.evolution_chain.url;
-				//}
+					//using (UnityWebRequest evolChainReq = UnityWebRequestTexture.GetTexture(pokeEvolutionChainUrl))
+					//{
+					//	yield return evolChainReq.SendWebRequest();
+					//	evolutionChainRoot = JsonUtility.FromJson<EvolutionChainRoot>(evolChainReq.downloadHandler.text);
+					//	Debug.Log("evol chain root: " + evolutionChainRoot.id);
+					//}
 
 
-				/*	Del evolution chain consigo las url de pokemon species y el orden de las evoluciones
-				 *	Obtener sprites con url arregladas de pokemon species
-				 *	Ordenarlos segun evolucion
-				 *	Acomodar los 3 sprites en cada espacio de UI
-				 *	*/
 
-				SetNewPokemonPrefab(i);
+					//using (UnityWebRequest request2 = UnityWebRequest.Get(pokeEvolutionChainUrl))
+					//{
+					//	yield return request2.SendWebRequest();
+					//	pokemonSpecies1 = JsonConvert.DeserializeObject<PokemonSpecies>(request2.downloadHandler.text);
+					//	pokeEvolutionChainUrl = pokemonSpecies1.evolution_chain.url;
+					//}
+
+
+					/*	Del evolution chain consigo las url de pokemon species y el orden de las evoluciones
+					 *	Obtener sprites con url arregladas de pokemon species
+					 *	Ordenarlos segun evolucion
+					 *	Acomodar los 3 sprites en cada espacio de UI
+					 *	*/
+
+					SetNewPokemonPrefab(i);
 			}
 
 			StopAllCoroutines();

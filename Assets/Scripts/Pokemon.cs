@@ -368,6 +368,14 @@ namespace Pokemon.API
 		public string url { get; set; }
 	}
 
+	[Serializable]
+	public class EvolutionChainRoot
+	{
+		public object baby_trigger_item { get; set; }
+		public Chain chain { get; set; }
+		public int id { get; set; }
+	}
+
 	// GetDataFromApi()
 	//var newPokUrl = "https://pokeapi.co/api/v2/evolution-chain/300";
 
@@ -384,12 +392,16 @@ namespace Pokemon.API
 
 
 
-	//public class Root
-	//{
-	//	public object baby_trigger_item { get; set; }
-	//	public Chain chain { get; set; }
-	//	public int id { get; set; }
-	//}
+
+
+	/*
+	 *  public class Root
+    {
+        public object baby_trigger_item { get; set; }
+        public Chain chain { get; set; }
+        public int id { get; set; }
+    }
+	 */
 
 
 	//public class EvolutionChain
