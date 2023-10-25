@@ -6,25 +6,32 @@ namespace Pokemon.API
 	[Serializable]
 	public class Pokemon
 	{
-		public List<PokeAbility> abilities;
-		public int base_experience;
-		public List<Forms> forms;
-		public List<VersionGameIndex> game_indices;
-		public int height;
-		public List<PokeHeldItem> held_items;
-		public int id;
-		public bool is_default;
-		public string location_area_encounters;
-		public List<PokeMove> moves;
-		public string name;
-		public int order;
-		public List<PokeTypePast> past_types;
-		public Species species;
-		public PokeSprites sprites;
-		public List<PokeStats> stats;
-		public List<PokeType> types;
-		public int weight;
+		public List<Abilities> abilities { get; set; }
+		public int base_experience { get; set; }
+		public List<Forms> forms { get; set; }
+		public List<GameIndices> game_indices { get; set; }
+		public int height { get; set; }
+		public List<HeldItems> held_items { get; set; }
+		public int id { get; set; }
+		public bool is_default { get; set; }
+		public string location_area_encounters { get; set; }
+		public List<Moves> moves { get; set; }
+		public string name { get; set; }
+		public int order { get; set; }
+		public List<PastAbilities> past_abilities;
+		public List<PastTypes> past_types;
+		public Species species { get; set; }
+		public Sprites sprites { get; set; }
+		public List<Stats> stats { get; set; }
+		public List<Types> types { get; set; }
+		public int weight { get; set; }
 	}
+
+	[Serializable]
+	public class PastAbilities { }
+
+	[Serializable]
+	public class PastTypes { }
 
 	[Serializable]
 	public class Chain
@@ -99,89 +106,138 @@ namespace Pokemon.API
 
 
 	[Serializable]
-	public class PokeStats
+	public class Stats
 	{
-		public Forms stat;
-		public int effort;
-		public int base_stat;
+		public int base_stat { get; set; }
+		public int effort { get; set; }
+		public Stat stat { get; set; }
 	}
 
 	[Serializable]
-	public class PokeSprites
+	public class Stat
 	{
-		public string front_default;
-		public string front_shiny;
-		public string front_female;
-		public string front_shiny_female;
-		public string back_default;
-		public string back_shiny;
-		public string back_female;
-		public string back_shiny_female;
+		public string name { get; set; }
+		public string url { get; set; }
+	}
+
+		[Serializable]
+	public class Sprites
+	{
+		public string back_default { get; set; }
+		public string back_female { get; set; }
+		public string back_shiny { get; set; }
+		public string back_shiny_female { get; set; }
+		public string front_default { get; set; }
+		public string front_female { get; set; }
+		public string front_shiny { get; set; }
+		public string front_shiny_female { get; set; }
 	}
 
 	[Serializable]
-	public class PokeType
+	public class Types
 	{
-		public int slot;
-		public Forms type;
+		public int slot { get; set; }
+		public Type type { get; set; }
+	}
+
+	[Serializable]
+	public class Type
+	{
+		public string name { get; set; }
+		public string url { get; set; }
 	}
 
 	[Serializable]
 	public class PokeTypePast
 	{
-		public Forms generation;
-		public List<PokeType> types;
+		public Ability generation { get; set; }
+		public List<Types> types { get; set; }
 	}
 
 	[Serializable]
-	public class PokeMove
+	public class Moves
 	{
-		public Forms move;
-		public PokemonMoveVersion version_group_details;
+		public Move move { get; set; }
+		public List<VersionGroupDetails> version_group_details { get; set; }
 	}
 
 	[Serializable]
-	public class PokemonMoveVersion
+	public class Move
 	{
-		public Forms move_learn_method;
-		public Forms version_group;
-		public int level_learned_at;
+		public string name { get; set; }
+		public string url { get; set; }
 	}
 
 	[Serializable]
-	public class PokeAbility
+	public class VersionGroupDetails
 	{
-		public bool is_hidden;
-		public int slot;
-		public Forms ability;
+		public int level_learned_at { get; set; }
+		public MoveLearnMethod move_learn_method { get; set; }
+		public VersionGroup version_group { get; set; }
 	}
 
 	[Serializable]
-	public class VersionGameIndex
+	public class Abilities
 	{
-		public int game_index;
-		public Forms version;
+		public Ability ability { get; set; }
+		public bool is_hidden { get; set; }
+		public int slot { get; set; }
 	}
 
 	[Serializable]
-	public class PokeHeldItem
+	public class GameIndices
 	{
-		public Forms item;
-		public PokemonHeldItemVersion version_details;
+		public int game_index { get; set; }
+		public Version version { get; set; }
 	}
 
 	[Serializable]
-	public class PokemonHeldItemVersion
+	public class HeldItems
 	{
-		public Forms version;
-		public int rarity;
+		public Item item { get; set; }
+		public List<VersionDetails> version_details { get; set; }
+	}
+
+	[Serializable]
+	public class VersionDetails
+	{
+		public int rarity { get; set; }
+		public Version version { get; set; }
+	}
+
+	[Serializable]
+	public class Ability
+	{
+		public string name { get; set; }
+		public string url { get; set; }
+	}
+
+	[Serializable]
+	public class Item
+	{
+		public string name { get; set; }
+		public string url { get; set; }
+	}
+
+	[Serializable]
+	public class MoveLearnMethod
+	{
+		public string name { get; set; }
+		public string url { get; set; }
+	}
+
+	[Serializable]
+	public class VersionGroup
+	{
+		public string name { get; set; }
+		public string url { get; set; }
 	}
 
 	[Serializable]
 	public class Forms
 	{
-		public string name;
-		public string url;
+		public string name { get; set; }
+		public string url { get; set; }
 	}
 
 	[Serializable]
