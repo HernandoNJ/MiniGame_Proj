@@ -194,7 +194,7 @@ MonoBehaviour:
   m_InputType: 0
   m_AsteriskChar: 42
   m_KeyboardType: 0
-  m_LineType: 0
+  m_LineType: 2
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 0
@@ -2250,7 +2250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokeUrl: https://pokeapi.co/api/v2/pokemon/300
-  pokeApiV2Url: 
+  pokeApiV2Url: https://pokeapi.co/api/v2/pokemon?offset=300&limit=200
   pokeSpeciesUrl: 
   pokeEvolutionChainUrl: 
   pokeMaxCount: 300
@@ -2259,31 +2259,8 @@ MonoBehaviour:
   newPokemon: {fileID: 0}
   newPokeTexture: {fileID: 0}
   pokemonFromApi:
-    abilities: []
-    base_experience: 0
-    forms: []
-    game_indices: []
-    height: 0
-    held_items: []
-    id: 0
-    is_default: 0
-    location_area_encounters: 
-    moves: []
-    name: 
-    order: 0
+    past_abilities: []
     past_types: []
-    sprites:
-      front_default: 
-      front_shiny: 
-      front_female: 
-      front_shiny_female: 
-      back_default: 
-      back_shiny: 
-      back_female: 
-      back_shiny_female: 
-    stats: []
-    types: []
-    weight: 0
   parentHandlers:
   - {fileID: 2525183145661837726}
   - {fileID: 129775892}

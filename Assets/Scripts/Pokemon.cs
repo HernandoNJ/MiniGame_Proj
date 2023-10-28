@@ -89,7 +89,7 @@ namespace Pokemon.API
 	}
 
 	[Serializable]
-	public class PokeApiObj
+	public class PokemonResults
 	{
 		public int count { get; set; }
 		public string next { get; set; }
