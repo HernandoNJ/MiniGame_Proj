@@ -101,10 +101,12 @@ namespace Pokemon.API
         }
         private async Task GetPokemonEvolutionChain()
         {
-            await SetOutputTextArea("Starting to get evolution chain... \n\n Evolution chain url: " + pokemonSpecies.evolution_chain.url, 3000);
-
+            await SetOutputTextArea("Starting to get evolution chain... \n\n Evolution chain url: " + pokemonSpecies.evolution_chain.url, 1000);
+            
             var evolutionChainJson = (await UnityWebRequest.Get(pokemonSpecies.evolution_chain.url).SendWebRequest()).downloadHandler.text;
-            await SetOutputTextArea("Evolution chain Json: \n" + evolutionChainJson, 2000);
+            Debug.Log("Evolution chain url: " + pokemonSpecies.evolution_chain.url);
+            Debug.Log("Evolution chain Json: \n" + evolutionChainJson);
+            await SetOutputTextArea("Evolution chain Json: \n" + evolutionChainJson, 1000);
 
             // TODO check for bug here
             try
