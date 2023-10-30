@@ -35,7 +35,7 @@ namespace Pokemon.API
 	public class Chain
 	{
 		public List<object> evolution_details { get; set; }
-		public List<EvolvesTo> evolves_to { get; set; }
+		public List<Chain> evolves_to { get; set; }
 		public bool is_baby { get; set; }
 		public BasicInfo species { get; set; }
 	}
@@ -67,7 +67,7 @@ namespace Pokemon.API
 	public class EvolvesTo
 	{
 		public List<EvolutionDetails> evolution_details { get; set; }
-		public List<object> evolves_to { get; set; }
+		public List<EvolvesTo> evolves_to { get; set; }
 		public bool is_baby { get; set; }
 		public BasicInfo species { get; set; }
 	}
@@ -168,7 +168,7 @@ namespace Pokemon.API
 	}
 
 	[Serializable]
-	public class EvolutionChain
+	public class EvolutionChainUrl
 	{
 		public string url { get; set; }
 	}
@@ -235,7 +235,7 @@ namespace Pokemon.API
 		public int Capture_rate { get; set; }
 		public BasicInfo Color { get; set; }
 		public List<BasicInfo> egg_groups { get; set; }
-		public EvolutionChain evolution_chain { get; set; }
+		public EvolutionChainUrl evolution_chain { get; set; }
 		public BasicInfo evolves_from_species { get; set; }
 		public List<FlavorTextEntry> flavor_text_entries { get; set; }
 		public List<object> form_descriptions { get; set; }

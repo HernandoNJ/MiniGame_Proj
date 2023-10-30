@@ -4,139 +4,99 @@ using Newtonsoft.Json;
 using TMPro;
 using Cysharp.Threading.Tasks;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Pokemon.API
 {
-    public class RestAPI : MonoBehaviour
-    {
-        public string initialPokemonResultsJson;
-        public string pokeUrl = "https://pokeapi.co/api/v2/pokemon/300";
-        public string pokemonResultsUrl = "https://pokeapi.co/api/v2/pokemon?offset=300&limit=200";
-        public string pokemonFromApiJson;
-        public string rawImageUrl;
-        public int pokeMaxCount;
-        public int[] itemsCountArray;
+	public class RestAPI : MonoBehaviour
+	{
+		public string initialPokemonResultsJson;
+		public string pokeUrl = "https://pokeapi.co/api/v2/pokemon/300";
+		public string pokemonResultsUrl = "https://pokeapi.co/api/v2/pokemon?offset=300&limit=200";
+		public string pokemonFromApiJson;
+		public string rawImageUrl;
+		public int pokeMaxCount;
+		public int[] itemsCountArray;
 
-        public GameObject pokeInfoPrefab;
-        public GameObject newPokemon;
-        public Texture2D newPokeTexture;
+		public GameObject pokeInfoPrefab;
+		public GameObject newPokemon;
+		public ParentHandler[] parentHandlers = new ParentHandler[3];
+		public Texture2D newPokeTexture;
 
-        public PokemonResults pokemonResults;
-        public Pokemon pokemonFromApi;
-        public PokemonSpecies pokemonSpecies;
-        public EvolutionChain evolutionChain;
-        public EvolutionChainRoot evolutionChainRoot;
-        public ParentHandler[] parentHandlers = new ParentHandler[3];
+		public EvolutionChainRoot evolutionChainRoot;
+		public List<Pokemon> pokemons;
+		public PokemonResults pokemonResults;
+		public PokemonSpecies pokemonSpecies;
 
-        private UniTask _defaultUniTask;
+		private void Start()
+		{
+			Invoke(nameof(GetPokemonsData), 0.1f);
+		}
 
-        [SerializeField] private TMP_InputField outputArea;
+		private async UniTask GetPokemonsData()
+		{
+			await UniTask.Delay(1000);
 
-        //pokeApiV2Url = "https://pokeapi.co/api/v2/pokemon?offset=300&limit=200";
-        //pokeSpeciesUrl = "https://pokeapi.co/api/v2/pokemon-species/300";
-        //pokeApiV2Url = "https://pokeapi.co/api/v2/pokemon/ditto";
-
-        private void Start()
-        {
-            _defaultUniTask = GetPokemonsData();
-        }
-
-        private async UniTask GetPokemonsData()
-        {
-            outputArea.text = "Loading...";
-            await UniTask.Delay(1000);
-
-            await GetPokemonResults();
-            await GetPokemonFromAPI();
-            await GetPokemonTexture();
-            await GetPokemonSpecies();
+			await GetPokemonResults();
+			await GetPokemonFromAPI(pokemonResults.results[5].url);
+			await GetPokemonEvolutions();
+			//await GetPokemonTexture();
 
 
-        }
-        private async Task GetPokemonResults()
-        {
-            //await GetNewObjectFromApi();
+		}
+		private async Task GetPokemonResults()
+		{
+			initialPokemonResultsJson =
+				(await UnityWebRequest.Get(pokemonResultsUrl).SendWebRequest()).downloadHandler.text;
+			pokemonResults = JsonConvert.DeserializeObject<PokemonResults>(initialPokemonResultsJson);
+		}
 
-            initialPokemonResultsJson = (await UnityWebRequest.Get(pokemonResultsUrl).SendWebRequest()).downloadHandler.text;
-            pokemonResults = JsonConvert.DeserializeObject<PokemonResults>(initialPokemonResultsJson);
+		private async Task GetPokemonFromAPI(string url)
+		{
+			pokemonFromApiJson =
+				(await UnityWebRequest.Get(url).SendWebRequest()).downloadHandler.text;
+			var newPokemon = JsonConvert.DeserializeObject<Pokemon>(pokemonFromApiJson);
+			pokemons.Add(newPokemon);
+		}
 
-            await SetOutputTextArea("Setting Pokemon results...", 500);
-        }
+		private async Task GetPokemonEvolutions()
+		{
+			var pokemonSpeciesJson0 =
+				(await UnityWebRequest.Get(pokemons[0].species.url).SendWebRequest()).downloadHandler.text;
+			pokemonSpecies = JsonConvert.DeserializeObject<PokemonSpecies>(pokemonSpeciesJson0);
 
-        //private async Task GetNewObjectFromApi(string url, Object obj)
-        //{
-        //	initialPokemonResultsJson = (await UnityWebRequest.Get(pokemonResultsUrl).SendWebRequest()).downloadHandler.text;
-        //	pokemonResults = JsonConvert.DeserializeObject<PokemonResults>(initialPokemonResultsJson);
-        //}
+			// Get and Set Evolution chain
+			var evolutionChainJson = (await UnityWebRequest.Get(pokemonSpecies.evolution_chain.url).SendWebRequest()).downloadHandler.text;
+			evolutionChainRoot = JsonConvert.DeserializeObject<EvolutionChainRoot>(evolutionChainJson);
 
-        private async Task GetPokemonFromAPI()
-        {
-            pokemonFromApiJson = (await UnityWebRequest.Get(pokemonResults.results[0].url).SendWebRequest()).downloadHandler.text;
-            pokemonFromApi = JsonConvert.DeserializeObject<Pokemon>(pokemonFromApiJson);
 
-            await SetOutputTextArea("New Pokemon: " + pokemonFromApi.name, 500);
-        }
-
-        private async Task GetPokemonTexture()
-        {
-            rawImageUrl = pokemonFromApi.sprites.front_default;
-            var pokemonTextureRequest = await UnityWebRequestTexture.GetTexture(rawImageUrl).SendWebRequest();
-            newPokeTexture = ((DownloadHandlerTexture)pokemonTextureRequest.downloadHandler).texture;
-            
-            await SetOutputTextArea("Setting Pokemon Texture...", 500);
-        }
-
-        private async Task GetPokemonSpecies()
-        {
-            await SetOutputTextArea("Pokemon Species url: \n" + pokemonFromApi.species.url, 500);
-
-            var pokemonSpeciesJson = (await UnityWebRequest.Get(pokemonFromApi.species.url).SendWebRequest()).downloadHandler.text;
-            await SetOutputTextArea("Pokemon Species Json: " + "\n" + pokemonSpeciesJson, 500);
-
-            pokemonSpecies = JsonConvert.DeserializeObject<PokemonSpecies>(pokemonSpeciesJson);
-            await SetOutputTextArea("Pokemon Species: " + pokemonSpecies.ToString(), 500);
-
-            await GetPokemonEvolutionChain();
-
-        }
-        private async Task GetPokemonEvolutionChain()
-        {
-            await SetOutputTextArea("Starting to get evolution chain... \n\n Evolution chain url: " + pokemonSpecies.evolution_chain.url, 1000);
-            
-            var evolutionChainJson = (await UnityWebRequest.Get(pokemonSpecies.evolution_chain.url).SendWebRequest()).downloadHandler.text;
-            Debug.Log("Evolution chain url: " + pokemonSpecies.evolution_chain.url);
-            Debug.Log("Evolution chain Json: \n" + evolutionChainJson);
-            await SetOutputTextArea("Evolution chain Json: \n" + evolutionChainJson, 1000);
-
-            // TODO check for bug here
-            try
-            {
-                evolutionChainRoot = JsonConvert.DeserializeObject<EvolutionChainRoot>(evolutionChainJson);
-            }
-            catch (System.Exception exc)
-            {
-                outputArea.text = exc.Message + "\n*** Stack tracke: *** " + exc.StackTrace ;
-                throw;
-            }
-            
-            await SetOutputTextArea("Evolution chain root object: \n" + evolutionChainRoot.ToString(), 2000);
-            await SetOutputTextArea("evol chain root - id: " + evolutionChainRoot.id + " - chain: " + evolutionChainRoot.chain, 2000);
-        }
-
-        private async Task SetOutputTextArea(string newText, int delayTime)
-        {
-            outputArea.text = newText;
-            await UniTask.Delay(delayTime);
-        }
-    }
+			var evol1 = evolutionChainRoot.chain.evolves_to;
+			if (evol1 != null)
+			{
+				//foreach (Chain chainItem in evol1)
+				//{
+				//	var newItemUrl = chainItem;
+				//	await GetPokemonFromAPI(newItemUrl);
+				//}
+			}
+		}
+	}
 }
 
 
-//		// Get evolution chain url
-//		pokeSpeciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + pokemonFromApi.id;
-//		using (UnityWebRequest request3 = UnityWebRequest.Get(pokeSpeciesUrl))
-//		{
+//pokeApiV2Url = "https://pokeapi.co/api/v2/pokemon?offset=300&limit=200";
+//pokeSpeciesUrl = "https://pokeapi.co/api/v2/pokemon-species/300";
+//pokeApiV2Url = "https://pokeapi.co/api/v2/pokemon/ditto";
+//pokeApiV2Url = "https://pokeapi.co/api/v2/pokemon/305";
 
+//private async Task GetPokemonTexture()
+//{
+//	rawImageUrl = pokemons.sprites.front_default;
+//	var pokemonTextureRequest = await UnityWebRequestTexture.GetTexture(rawImageUrl).SendWebRequest();
+//	newPokeTexture = ((DownloadHandlerTexture)pokemonTextureRequest.downloadHandler).texture;
+
+//	await SetOutputTextArea("Setting Pokemon Texture...", 500);
+//}
 
 //private void SetNewPokemonPrefab(int i)
 //{
