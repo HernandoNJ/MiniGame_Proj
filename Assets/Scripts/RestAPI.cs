@@ -11,7 +11,7 @@ namespace Pokemon.API
 	public class RestAPI : MonoBehaviour
 	{
 		public string initialPokemonResultsJson;
-		public string pokeUrl = "https://pokeapi.co/api/v2/pokemon/300";
+		public string pokeUrl;
 		public string pokemonResultsUrl = "https://pokeapi.co/api/v2/pokemon?offset=300&limit=200";
 		public string pokemonFromApiJson;
 		public string rawImageUrl;
@@ -30,6 +30,7 @@ namespace Pokemon.API
 
 		private void Start()
 		{
+			pokeUrl = "https://pokeapi.co/api/v2/pokemon/1";
 			Invoke(nameof(GetPokemonsData), 0.1f);
 		}
 
@@ -37,48 +38,98 @@ namespace Pokemon.API
 		{
 			await UniTask.Delay(1000);
 
-			await GetPokemonResults();
-			await GetPokemonFromAPI(pokemonResults.results[5].url);
-			await GetPokemonEvolutions();
+			//await GetPokemonResults();
+			//await GetPokemonFromAPI(pokemonResults.results[1].url);
+			await GetPokemonFromAPI(pokeUrl);
+			//await GetPokemonEvolutions(pokemons[0].species.url);
+			await GetPokemonEvolutions(pokemons[0].species.url);
 			//await GetPokemonTexture();
 
 
 		}
 		private async Task GetPokemonResults()
 		{
+			Debug.Log("Init GetPokemonResults");
+
 			initialPokemonResultsJson =
 				(await UnityWebRequest.Get(pokemonResultsUrl).SendWebRequest()).downloadHandler.text;
 			pokemonResults = JsonConvert.DeserializeObject<PokemonResults>(initialPokemonResultsJson);
+
+			Debug.Log("End GetPokemonResults");
 		}
 
 		private async Task GetPokemonFromAPI(string url)
 		{
+
+			Debug.Log("Init GetPokemonFromApi");
+			Debug.Log("url: " + url);
+
 			pokemonFromApiJson =
 				(await UnityWebRequest.Get(url).SendWebRequest()).downloadHandler.text;
 			var newPokemon = JsonConvert.DeserializeObject<Pokemon>(pokemonFromApiJson);
 			pokemons.Add(newPokemon);
+
+			Debug.Log("new Pokemon name: " + newPokemon.name);
+			Debug.Log("pokemons[0] name: " + pokemons[0].name);
+			Debug.Log("End GetPokemonFromApi");
 		}
 
-		private async Task GetPokemonEvolutions()
+		private async Task GetPokemonEvolutions(string url)
 		{
+			Debug.Log("Init GetPokemonEvolutions");
+
 			var pokemonSpeciesJson0 =
-				(await UnityWebRequest.Get(pokemons[0].species.url).SendWebRequest()).downloadHandler.text;
+				(await UnityWebRequest.Get(url).SendWebRequest()).downloadHandler.text;
 			pokemonSpecies = JsonConvert.DeserializeObject<PokemonSpecies>(pokemonSpeciesJson0);
+
+			Debug.Log("pokemonSpecies.name: " + pokemonSpecies.name);
 
 			// Get and Set Evolution chain
 			var evolutionChainJson = (await UnityWebRequest.Get(pokemonSpecies.evolution_chain.url).SendWebRequest()).downloadHandler.text;
 			evolutionChainRoot = JsonConvert.DeserializeObject<EvolutionChainRoot>(evolutionChainJson);
+			Debug.Log("evolutionChainRoot id: " + evolutionChainRoot.id);
 
-
-			var evol1 = evolutionChainRoot.chain.evolves_to;
-			if (evol1 != null)
+			var chain1 = evolutionChainRoot.chain;
+			if (chain1.evolves_to.Count > 0)
 			{
-				//foreach (Chain chainItem in evol1)
-				//{
-				//	var newItemUrl = chainItem;
-				//	await GetPokemonFromAPI(newItemUrl);
-				//}
+				// Level 0-
+				Debug.Log("chain1.evolves_to.Count > 0");
+				Debug.Log("chain1.evolves_to[0], species name: " + chain1.evolves_to[0].species.name);
+
+				// Level 0-0
+				if (chain1.evolves_to[0].evolves_to.Count > 0)
+				{
+					Debug.Log("chain1.evolves_to.Count > 0");
+					Debug.Log("chain1.evolves_to[0].evolves_to[0], level 0-2, species name: " + chain1.evolves_to[0].evolves_to[0].species.name);
+
+					// Level 0-0-0
+					if (chain1.evolves_to[0].evolves_to[0].evolves_to.Count > 0)
+					{
+						Debug.Log("chain1.evolves_to.Count > 0");
+						Debug.Log("chain1.evolves_to[0].evolves_to[0].evolves_to.Count > 0, level 0-3, species name: " + chain1.evolves_to[0].evolves_to[0].evolves_to[0].species.name);
+
+						// Level 0-0-0-0
+						if (chain1.evolves_to[0].evolves_to[0].evolves_to[0].evolves_to.Count > 0)
+						{
+							Debug.Log("chain1.evolves_to[0].evolves_to[0].evolves_to[0].evolves_to.Count > 0, level 0-4, species name: " + chain1.evolves_to[0].evolves_to[0].evolves_to[0].evolves_to[0].species.name);
+
+							// Level 0-0-0-0-0
+							if (chain1.evolves_to[0].evolves_to[0].evolves_to[0].evolves_to[0].evolves_to.Count > 0)
+							{
+								Debug.Log("chain1.evolves_to[0].evolves_to[0].evolves_to[0].evolves_to[0].evolves_to.Count > 0, level 0-5, species name: " + chain1.evolves_to[0].evolves_to[0].evolves_to[0].evolves_to[0].evolves_to[0].species.name);
+							}
+							else { Debug.Log("quit level 5, return;"); return; }
+						}
+						else { Debug.Log("quit level 4, return;"); return; }
+					}
+					else { Debug.Log("quit level 3, return;"); return; }
+				}
+				else { Debug.Log("quit level 2, return;"); return; }
 			}
+			else { Debug.Log("quit level 1, return;"); return; }
+
+			Debug.Log("End GetPokemonEvolutions");
+
 		}
 	}
 }
