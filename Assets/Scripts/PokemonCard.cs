@@ -14,7 +14,7 @@ public class PokemonCard : MonoBehaviour
 
 	private void GetPokemonData(string nameArg, RawImage imageArg)
 	{
-		nameText.text = nameArg; 
+		nameText.text = nameArg;
 		image.texture = imageArg.texture;
 	}
 }
