@@ -1631,11 +1631,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialPokemonResultsJson: 
-  pokeUrl: https://pokeapi.co/api/v2/pokemon/300
+  pokeUrl: https://pokeapi.co/api/v2/pokemon/301
   pokemonResultsUrl: https://pokeapi.co/api/v2/pokemon?offset=300&limit=200
   pokemonFromApiJson: 
   rawImageUrl: 
   pokeMaxCount: 300
+  pokeChainIdsCounter: 0
   itemsCountArray: 64000000c80000002c010000
   pokemonCardGroupPrefab: {fileID: 8719830601471213471, guid: 616088143d3c4b447b52fa79f6f1ec4d, type: 3}
   newPokemon: {fileID: 0}
@@ -1645,7 +1646,15 @@ MonoBehaviour:
   - {fileID: 1598678839}
   newPokeTexture: {fileID: 0}
   pokemons: []
+  pokemonsArray:
+  - past_abilities: []
+    past_types: []
+  - past_abilities: []
+    past_types: []
+  - past_abilities: []
+    past_types: []
   pokemonsIdList: 
+  evolutionChainsIdList: 
   pokemon:
     past_abilities: []
     past_types: []
