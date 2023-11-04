@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using Newtonsoft.Json;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Pokemon.API
 {
@@ -13,25 +14,21 @@ namespace Pokemon.API
 		public string pokemonResultsUrl;
 		public string pokemonFromApiJson;
 		public string rawImageUrl;
+		public int pokeChainsCount;
 		public int pokeMaxCount;
-		public int pokeChainIdsCounter;
-		public int[] itemsCountArray;
+		public int maxPanelItems;
 
-		public GameObject pokemonCardGroupPrefab;
-		public GameObject newPokemon;
-		public ParentHandler[] parentHandlers = new ParentHandler[3];
+		public GameObject pokemonEvolutionsPrefab;
+		public GameObject pokemonEvolutionsGameobject;
 		public Texture2D newPokeTexture;
-
-		public Chain currentChain;
-		public EvolutionChainRoot evolutionChainRoot;
-		public List<Pokemon> pokemonsList;
-		public List<Pokemon> checkedPokemons;
-		public Pokemon[] pokemonsGroup;
-		public List<int> pokemonsIdList;
-		public List<int> evolutionChainsIdList;
+		public ParentHandler[] parentHandlers;
 		public Pokemon pokemon;
+		public Pokemon[] tempPokemons;
 		public PokemonResults pokemonResults;
 		public PokemonSpecies pokemonSpecies;
+		public Chain currentChain;
+		public EvolutionChainRoot evolutionChainRoot;
+		public List<int> evolutionChainIds;
 
 		private void Start()
 		{
@@ -60,7 +57,7 @@ namespace Pokemon.API
 
 			pokemonResults = JsonConvert.DeserializeObject<PokemonResults>(initialPokemonResultsJson);
 
-			for (int i = 0; i < 20; i++)
+			for (int i = 0; i < 30; i++)
 				await GetPokemonFromAPI(pokemonResults.results[i].url);
 		}
 
@@ -96,59 +93,85 @@ namespace Pokemon.API
 			evolutionChainRoot = JsonConvert.DeserializeObject<EvolutionChainRoot>(evolutionChainJson);
 
 			// If list contains id, it means the pokemons were already created, return
-			if (evolutionChainsIdList.Contains(evolutionChainRoot.id)) return;
+			if (evolutionChainIds.Contains(evolutionChainRoot.id)) return;
 
-			evolutionChainsIdList.Add(evolutionChainRoot.id);
+			evolutionChainIds.Add(evolutionChainRoot.id);
+			pokeChainsCount++;
 			Debug.Log("evolution chain id: " + evolutionChainRoot.id);
+			Debug.Log("chains count: " + pokeChainsCount);
+
 			currentChain = evolutionChainRoot.chain;
+			int chainItemsCounter = 0;
 
 			string url0, url1, url2;
 
 			url0 = currentChain.species.name;
-			await AddPokemonToLists(url0, 0);
+			await GetPokemonEvolutionObjects(url0, 0);
 
 			if (currentChain.evolves_to.Count > 0)
 			{
 				url1 = currentChain.evolves_to[0].species.name;
-				await AddPokemonToLists(url1, 1);
+				await GetPokemonEvolutionObjects(url1, 1);
 
 				if (currentChain.evolves_to[0].evolves_to.Count > 0)
 				{
 					url2 = currentChain.evolves_to[0].evolves_to[0].species.name;
-					await AddPokemonToLists(url2, 2);
+					await GetPokemonEvolutionObjects(url2, 2);
 				}
 			}
 
 			Debug.Log("Returning to Get Pokemon Evolutions ");
 
-			// Local function
-			async UniTask<Object> AddPokemonToLists(string url, int index)
+			await InstantiatePokemonEvolutions();
+
+
+			async Task InstantiatePokemonEvolutions()
+			{
+				if (pokeChainsCount < maxPanelItems)
+					pokemonEvolutionsGameobject = Instantiate(pokemonEvolutionsPrefab, parentHandlers[0].transform);
+				else if (pokeChainsCount < (maxPanelItems * 2))
+					pokemonEvolutionsGameobject = Instantiate(pokemonEvolutionsPrefab, parentHandlers[1].transform);
+				else if (pokeChainsCount < (maxPanelItems * 3))
+					pokemonEvolutionsGameobject = Instantiate(pokemonEvolutionsPrefab, parentHandlers[2].transform);
+				else Debug.Log("*** Check out if poke chains count and max panel items");
+
+				await SetPokemonEvolutionsItems();
+			}
+
+			async Task SetPokemonEvolutionsItems()
+			{
+				var evolutionItems = pokemonEvolutionsGameobject.GetComponent<PokemonEvolutions>().GetPokemonCardItems();
+
+				for (int i = 0; i < chainItemsCounter; i++)
+				{
+					evolutionItems[i].gameObject.SetActive(true);
+					evolutionItems[i].GetComponent<PokemonCard>().nameText.text = tempPokemons[i].name;
+
+					var textureUrl = tempPokemons[i].sprites.front_default;
+					evolutionItems[i].GetComponent<PokemonCard>().image.texture = await GetPokemonTexture(textureUrl);
+				}
+			}
+
+			// Create Pokemon objects
+			async Task GetPokemonEvolutionObjects(string url, int index)
 			{
 				var pokemon = await GetPokemonFromSpeciesUrl(url);
 				if (pokemon != null)
 				{
-					pokemonsGroup[index] = pokemon;
-					pokemonsList.Add(pokemon);
-					checkedPokemons.Add(pokemon);
-					Debug.Log("pokemon name" + index + " : " + pokemonsGroup[index].name);
+					tempPokemons[index] = pokemon;
+					Debug.Log("pokemon name: " + pokemon.name + ", index: " + index);
+					chainItemsCounter++;
 				}
-
-				return null;
 			}
 
-
-			//pokemonsArray[0] = await GetPokemonFromSpeciesUrl(speciesName0);
-			//pokemonsArray[1] = await GetPokemonFromSpeciesUrl(speciesName1);
-			//pokemonsArray[2] = await GetPokemonFromSpeciesUrl(speciesName2);
-			//Debug.Log($"pk0: {pokemonsArray[0].name}, pk1: {pokemonsArray[1].name}, pk2: {pokemonsArray[2].name}");
-			//Debug.Log("Returning to Get Pokemon Evolutions ");
+			async UniTask<Texture2D> GetPokemonTexture(string url)
+			{
+				var pokemonTextureRequest = await UnityWebRequestTexture.GetTexture(url).SendWebRequest();
+				return newPokeTexture = ((DownloadHandlerTexture)pokemonTextureRequest.downloadHandler).texture;
+			}
 		}
 
-		private async UniTask<Texture2D> GetPokemonTexture(string url)
-		{
-			var pokemonTextureRequest = await UnityWebRequestTexture.GetTexture(url).SendWebRequest();
-			return newPokeTexture = ((DownloadHandlerTexture)pokemonTextureRequest.downloadHandler).texture;
-		}
+
 
 
 

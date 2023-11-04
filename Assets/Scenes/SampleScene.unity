@@ -1635,21 +1635,17 @@ MonoBehaviour:
   pokemonResultsUrl: https://pokeapi.co/api/v2/pokemon?offset=300&limit=200
   pokemonFromApiJson: 
   rawImageUrl: 
+  pokeChainsCount: 0
   pokeMaxCount: 300
-  pokeChainIdsCounter: 0
-  itemsCountArray: 64000000c80000002c010000
-  pokemonCardGroupPrefab: {fileID: 8719830601471213471, guid: 616088143d3c4b447b52fa79f6f1ec4d, type: 3}
-  newPokemon: {fileID: 0}
+  maxPanelItems: 100
+  pokemonEvolutionsPrefab: {fileID: 7554285286382083207, guid: 714534e81f1c5be41b0a681b648ec2bc, type: 3}
+  newPokeTexture: {fileID: 0}
   parentHandlers:
   - {fileID: 2525183145661837726}
   - {fileID: 129775892}
   - {fileID: 1598678839}
-  newPokeTexture: {fileID: 0}
-  pokemonsList: []
-  checkedPokemons: []
-  pokemonsGroup: []
-  pokemonsIdList: 
-  evolutionChainsIdList: 
+  tempPokemons: []
+  evolutionChainIds: 
 --- !u!4 &1266096089
 Transform:
   m_ObjectHideFlags: 0
@@ -2873,12 +2869,12 @@ MonoBehaviour:
   m_Padding:
     m_Left: 20
     m_Right: 50
-    m_Top: 0
-    m_Bottom: 0
+    m_Top: 10
+    m_Bottom: 10
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 50}
+  m_CellSize: {x: 100, y: 40}
   m_Spacing: {x: 20, y: 10}
   m_Constraint: 1
   m_ConstraintCount: 10
