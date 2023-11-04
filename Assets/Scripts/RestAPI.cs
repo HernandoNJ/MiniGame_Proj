@@ -24,8 +24,9 @@ namespace Pokemon.API
 
 		public Chain currentChain;
 		public EvolutionChainRoot evolutionChainRoot;
-		public List<Pokemon> pokemons;
-		public Pokemon[] pokemonsArray;
+		public List<Pokemon> pokemonsList;
+		public List<Pokemon> checkedPokemons;
+		public Pokemon[] pokemonsGroup;
 		public List<int> pokemonsIdList;
 		public List<int> evolutionChainsIdList;
 		public Pokemon pokemon;
@@ -34,17 +35,17 @@ namespace Pokemon.API
 
 		private void Start()
 		{
-			pokeUrl = "https://pokeapi.co/api/v2/pokemon/3";
-			pokemonResultsUrl = "https://pokeapi.co/api/v2/pokemon?offset=299&limit=200";
+			pokeUrl = "https://pokeapi.co/api/v2/pokemon/300";
+			pokemonResultsUrl = "https://pokeapi.co/api/v2/pokemon?offset=1&limit=200";
 
 			Invoke(nameof(GetPokemonsData), 0.1f);
 		}
 
 		private async UniTask GetPokemonsData()
 		{
-			//await GetPokemonResults();
+			await GetPokemonResults();
+			//await GetPokemonFromAPI(pokeUrl);
 			//await GetPokemonFromAPI(pokemonResults.results[1].url);
-			await GetPokemonFromAPI(pokeUrl);
 			//await GetPokemonEvolutions(pokemons[0].species.url);
 			//await GetPokemonEvolutions(pokemons[0].species.url);
 			//await GetPokemonTexture();
@@ -59,8 +60,8 @@ namespace Pokemon.API
 
 			pokemonResults = JsonConvert.DeserializeObject<PokemonResults>(initialPokemonResultsJson);
 
-			//for (int i = 0; i < 20; i++)
-			//await GetPokemonFromAPI(pokemonResults.results[35].url);
+			for (int i = 0; i < 20; i++)
+				await GetPokemonFromAPI(pokemonResults.results[i].url);
 		}
 
 		private async UniTask GetPokemonFromAPI(string url)
@@ -69,7 +70,6 @@ namespace Pokemon.API
 				(await UnityWebRequest.Get(url).SendWebRequest()).downloadHandler.text;
 
 			pokemon = JsonConvert.DeserializeObject<Pokemon>(pokemonFromApiJson);
-			Debug.Log("pokemon name: " + pokemon.name);
 			await GetPokemonEvolutions(pokemon.species.url);
 		}
 
@@ -77,10 +77,9 @@ namespace Pokemon.API
 		{
 			var newUrl = "https://pokeapi.co/api/v2/pokemon/" + stringSuffix;
 			var json = (await UnityWebRequest.Get(newUrl).SendWebRequest()).downloadHandler.text;
-			var pokemonFromSpecies1 = JsonConvert.DeserializeObject<Pokemon>(json);
-			Debug.Log("pokemonFromSpecies1 name: " + pokemonFromSpecies1.name);
+			var pokemonFromSpecies = JsonConvert.DeserializeObject<Pokemon>(json);
 
-			return pokemonFromSpecies1;
+			return pokemonFromSpecies;
 		}
 
 		private async UniTask GetPokemonEvolutions(string url)
@@ -90,7 +89,7 @@ namespace Pokemon.API
 
 			pokemonSpecies = JsonConvert.DeserializeObject<PokemonSpecies>(pokemonSpeciesJson);
 
-			// Get and Set Evolution chain
+			// Get and Set Evolution chain root
 			var evolutionChainJson =
 				(await UnityWebRequest.Get(pokemonSpecies.evolution_chain.url).SendWebRequest()).downloadHandler.text;
 
@@ -98,29 +97,45 @@ namespace Pokemon.API
 
 			// If list contains id, it means the pokemons were already created, return
 			if (evolutionChainsIdList.Contains(evolutionChainRoot.id)) return;
-			//else
-			//{
-			//	evolutionChainsIdList.Add(evolutionChainRoot.id);
-			//	pokeChainIdsCounter++;
-			//}
 
-			//if (pokeChainIdsCounter < 101) Instantiate(pokemonCardGroupPrefab, parentHandlers[0].transform);
-			//else if (pokeChainIdsCounter < 201) Instantiate(pokemonCardGroupPrefab, parentHandlers[1].transform);
-			//else if (pokeChainIdsCounter < 301) Instantiate(pokemonCardGroupPrefab, parentHandlers[2].transform);
-
-
+			evolutionChainsIdList.Add(evolutionChainRoot.id);
+			Debug.Log("evolution chain id: " + evolutionChainRoot.id);
 			currentChain = evolutionChainRoot.chain;
-			
-			Debug.Log("0 currentChain.species.name: " + currentChain.species.name);
+
+			string url0, url1, url2;
+
+			url0 = currentChain.species.name;
+			await AddPokemonToLists(url0, 0);
 
 			if (currentChain.evolves_to.Count > 0)
-				Debug.Log("1 currentChain.evolves_to[0].species.name: " + currentChain.evolves_to[0].species.name);
-			else return;
+			{
+				url1 = currentChain.evolves_to[0].species.name;
+				await AddPokemonToLists(url1, 1);
 
-			if (currentChain.evolves_to[0].evolves_to.Count > 0)
-				Debug.Log("2 currentChain.evolves_to[0].evolves_to[0].species.name: " + currentChain.evolves_to[0].evolves_to[0].species.name);
+				if (currentChain.evolves_to[0].evolves_to.Count > 0)
+				{
+					url2 = currentChain.evolves_to[0].evolves_to[0].species.name;
+					await AddPokemonToLists(url2, 2);
+				}
+			}
 
 			Debug.Log("Returning to Get Pokemon Evolutions ");
+
+			// Local function
+			async UniTask<Object> AddPokemonToLists(string url, int index)
+			{
+				var pokemon = await GetPokemonFromSpeciesUrl(url);
+				if (pokemon != null)
+				{
+					pokemonsGroup[index] = pokemon;
+					pokemonsList.Add(pokemon);
+					checkedPokemons.Add(pokemon);
+					Debug.Log("pokemon name" + index + " : " + pokemonsGroup[index].name);
+				}
+
+				return null;
+			}
+
 
 			//pokemonsArray[0] = await GetPokemonFromSpeciesUrl(speciesName0);
 			//pokemonsArray[1] = await GetPokemonFromSpeciesUrl(speciesName1);
@@ -135,16 +150,18 @@ namespace Pokemon.API
 			return newPokeTexture = ((DownloadHandlerTexture)pokemonTextureRequest.downloadHandler).texture;
 		}
 
-		private async UniTask SetNewPokemonCard(string pokeSpeciesName, int pokemonCardsIndex)
-		{
-			var newPokemon1 = await GetPokemonFromSpeciesUrl(pokeSpeciesName);
 
-			var newPokemonCard = pokemonCardGroupPrefab.GetComponent<PokemonCardGroup>().pokemonCards[pokemonCardsIndex];
 
-			newPokemonCard.gameObject.SetActive(true);
-			newPokemonCard.GetComponent<PokemonCard>().name = newPokemon1.name;
-			newPokemonCard.GetComponent<PokemonCard>().image.texture = await GetPokemonTexture(newPokemon1.sprites.front_default);
-		}
+		//private async UniTask SetNewPokemonCard(string url, int pokemonCardsIndex)
+		//{
+		//	var newPokemon1 = await GetPokemonFromSpeciesUrl(url);
+
+		//	var newPokemonCard = pokemonCardGroupPrefab.GetComponent<PokemonCardGroup>().pokemonCards[pokemonCardsIndex];
+
+		//	newPokemonCard.gameObject.SetActive(true);
+		//	newPokemonCard.GetComponent<PokemonCard>().name = newPokemon1.name;
+		//	newPokemonCard.GetComponent<PokemonCard>().image.texture = await GetPokemonTexture(newPokemon1.sprites.front_default);
+		//}
 	}
 }
 

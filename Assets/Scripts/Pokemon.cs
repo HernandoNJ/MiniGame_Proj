@@ -18,8 +18,8 @@ namespace Pokemon.API
 		public List<Moves> moves { get; set; }
 		public string name { get; set; }
 		public int order { get; set; }
-		public List<PastAbilities> past_abilities;
-		public List<PastTypes> past_types;
+		//public List<PastAbilities> past_abilities;
+		//public List<PastTypes> past_types;
 		public BasicInfo species { get; set; }
 		public Sprites sprites { get; set; }
 		public List<Stats> stats { get; set; }

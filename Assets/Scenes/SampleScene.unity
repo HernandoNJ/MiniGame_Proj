@@ -1645,19 +1645,11 @@ MonoBehaviour:
   - {fileID: 129775892}
   - {fileID: 1598678839}
   newPokeTexture: {fileID: 0}
-  pokemons: []
-  pokemonsArray:
-  - past_abilities: []
-    past_types: []
-  - past_abilities: []
-    past_types: []
-  - past_abilities: []
-    past_types: []
+  pokemonsList: []
+  checkedPokemons: []
+  pokemonsGroup: []
   pokemonsIdList: 
   evolutionChainsIdList: 
-  pokemon:
-    past_abilities: []
-    past_types: []
 --- !u!4 &1266096089
 Transform:
   m_ObjectHideFlags: 0
