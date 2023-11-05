@@ -1,12 +1,14 @@
+using UnityEngine.UI;
+
 public class PokemonCardMain : PokemonCard
 {
 	private void OnEnable() => OnSendPokemonData += SetPokemonCardMainData;
 	private void OnDisable() => OnSendPokemonData -= SetPokemonCardMainData;
 
-	public void SetPokemonCardMainData(PokemonCard pokemonCardArg)
+	public void SetPokemonCardMainData(string nameInfo, string expInfo, RawImage imageInfo)
 	{
-		nameText.text = pokemonCardArg.nameText.text;
-		exp.text = pokemonCardArg.exp.text;
-		image.texture = pokemonCardArg.image.texture;
+		nameText.text = nameInfo;
+		exp.text = expInfo;
+		image.texture = imageInfo.texture;
 	}
 }
