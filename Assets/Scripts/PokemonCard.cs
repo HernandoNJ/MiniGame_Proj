@@ -5,16 +5,14 @@ using UnityEngine.UI;
 public class PokemonCard : MonoBehaviour
 {
 	public TextMeshProUGUI nameText;
+	public TextMeshProUGUI exp;
 	public RawImage image;
 
-	private void Start()
-	{
-		PokemonInfo.OnSetPokemonCardData += GetPokemonData;
-	}
+	public static event System.Action<PokemonCard> OnSendPokemonData;
 
-	private void GetPokemonData(string nameArg, RawImage imageArg)
+	public void SetPokemonCardData(PokemonCard pokemonCardArg)
 	{
-		nameText.text = nameArg;
-		image.texture = imageArg.texture;
+		pokemonCardArg = this;
+		OnSendPokemonData?.Invoke(pokemonCardArg);
 	}
 }
