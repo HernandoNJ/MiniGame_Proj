@@ -158,6 +158,7 @@ namespace Pokemon.API
 				{
 					evolutionItems[i].gameObject.SetActive(true);
 					evolutionItems[i].GetComponent<PokemonCard>().nameText.text = tempPokemons[i].name;
+					evolutionItems[i].GetComponent<PokemonCard>().exp.text = tempPokemons[i].base_experience.ToString();
 
 					var textureUrl = tempPokemons[i].sprites.front_default;
 					evolutionItems[i].GetComponent<PokemonCard>().image.texture = await GetPokemonTexture(textureUrl);
@@ -168,8 +169,9 @@ namespace Pokemon.API
 
 						// Set PokemonMainCard data for the first time
 						pokeRawImage.texture = await GetPokemonTexture(pokemon.sprites.front_default);
+						
 						pokemonCardMain2.SetPokemonCardMainData(
-							pokemon.name, 
+							pokemon.name,
 							pokemon.base_experience.ToString(), 
 							pokeRawImage);
 					}
