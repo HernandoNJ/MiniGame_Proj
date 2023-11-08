@@ -191,16 +191,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 20
-    m_Right: 50
+    m_Right: 20
     m_Top: 10
     m_Bottom: 10
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 60}
-  m_Spacing: {x: 30, y: 30}
+  m_CellSize: {x: 45, y: 60}
+  m_Spacing: {x: 10, y: 10}
   m_Constraint: 1
-  m_ConstraintCount: 7
+  m_ConstraintCount: 20
 --- !u!1 &315150556
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,7 +811,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 25
+  m_text: '50
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1539,12 +1541,13 @@ MonoBehaviour:
   pokeUrl: https://pokeapi.co/api/v2/pokemon/300
   pokemonResultsUrl: https://pokeapi.co/api/v2/pokemon?offset=300&limit=300
   pokeMaxCount: 300
-  maxPanelItems: 25
+  maxPanelItems: 100
+  pokemonsCounter: 0
   pokeChainsCount: 0
-  itemsCountForTest: 300
+  itemsCountForTest: 0
   isCardInit: 0
-  pokemonEvolutionsPrefab: {fileID: 7554285286382083207, guid: 714534e81f1c5be41b0a681b648ec2bc, type: 3}
-  pokemonEvolutionsGameobject: {fileID: 0}
+  pokemonCard: {fileID: 1835336542944179189, guid: 58da028a7b81a6746bded62fcb7530b2, type: 3}
+  pokemonCardGameobject: {fileID: 0}
   pokeRawImage: {fileID: 8699523155766004391}
   pokeTexture: {fileID: 0}
   pokemonCardMain2: {fileID: 3907694967507248815}
@@ -2204,16 +2207,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 20
-    m_Right: 50
+    m_Right: 20
     m_Top: 10
     m_Bottom: 10
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 60}
-  m_Spacing: {x: 30, y: 30}
+  m_CellSize: {x: 45, y: 60}
+  m_Spacing: {x: 10, y: 10}
   m_Constraint: 1
-  m_ConstraintCount: 7
+  m_ConstraintCount: 20
 --- !u!1 &1685890428
 GameObject:
   m_ObjectHideFlags: 0
@@ -2499,7 +2502,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2103382384
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2857,16 +2860,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 20
-    m_Right: 50
+    m_Right: 20
     m_Top: 10
     m_Bottom: 10
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 150, y: 60}
-  m_Spacing: {x: 30, y: 30}
+  m_CellSize: {x: 45, y: 60}
+  m_Spacing: {x: 10, y: 10}
   m_Constraint: 1
-  m_ConstraintCount: 7
+  m_ConstraintCount: 20
 --- !u!1 &4296213190393751508
 GameObject:
   m_ObjectHideFlags: 0
