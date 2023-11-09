@@ -7,17 +7,11 @@ public class PokemonCard : MonoBehaviour
 	public TextMeshProUGUI nameText;
 	public TextMeshProUGUI exp;
 	public RawImage image;
+	public string speciesUrl;
 
-	public static event System.Action<string, string, RawImage> OnSendPokemonData;
+	public static event System.Action<string> OnSendPokemonData;
 
-	public void RaiseSendPokemonCardData()
-	{
-		Debug.Log("*** RaisePokemonData called");
-		SendPokemonCardData(nameText.text, exp.text, image);
-	}
+	public void RaiseSendPokemonCardData() => SendPokemonCardData(speciesUrl);
 
-	public void SendPokemonCardData(string nameArg, string expArg, RawImage imageArg)
-	{
-		OnSendPokemonData?.Invoke(nameArg, expArg, imageArg);
-	}
+	public void SendPokemonCardData(string speciesUrlArg) => OnSendPokemonData?.Invoke(speciesUrlArg);
 }

@@ -1,14 +1,17 @@
-using UnityEngine.UI;
+using TMPro;
+using UnityEngine;
 
-public class PokemonCardMain : PokemonCard
+public class PokemonCardMain : MonoBehaviour
 {
-	private void OnEnable() => OnSendPokemonData += SetPokemonCardMainData;
-	private void OnDisable() => OnSendPokemonData -= SetPokemonCardMainData;
+	public MainCardInfo[] mainCardItems = new MainCardInfo[3];
+	
+	public static event System.Action<string> OnSetPokemonEvolutions;
 
-	public void SetPokemonCardMainData(string nameInfo, string expInfo, RawImage imageInfo)
+	private void OnEnable() => PokemonCard.OnSendPokemonData += SetPokemonCardMainData;
+	private void OnDisable() => PokemonCard.OnSendPokemonData -= SetPokemonCardMainData;
+
+	public void SetPokemonCardMainData(string speciesUrlInfo)
 	{
-		nameText.text = nameInfo;
-		exp.text = expInfo;
-		image.texture = imageInfo.texture;
+		OnSetPokemonEvolutions?.Invoke(speciesUrlInfo);
 	}
 }

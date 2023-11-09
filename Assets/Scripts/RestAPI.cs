@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine.UI;
+using System;
 
 namespace Pokemon.API
 {
@@ -12,37 +12,29 @@ namespace Pokemon.API
 	{
 		public string pokeUrl;
 		public string pokemonResultsUrl;
+		public string textureUrlPrefix = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
 		public int pokeMaxCount;
 		public int maxPanelItems;
 		public int pokemonsCounter;
-		public int pokeChainsCount;
-		public int itemsCountForTest;
-		public bool isCardInit;
 
 		public GameObject pokemonCard;
 		public GameObject pokemonCardGameobject;
 		public RawImage pokeRawImage;
 		public Texture2D pokeTexture;
 		public Pokemon pokemon;
-		public PokemonCardMain2 pokemonCardMain2;
+		public PokemonCardMain pokemonCardMain;
 		public PokemonResults pokemonResults;
-		public PokemonSpecies pokemonSpecies;
 		public ParentHandler[] parentHandlers = new ParentHandler[3];
-		public List<PokemonCard> pokemonCardsList;
-		public Pokemon[] tempPokemons = new Pokemon[3];
-		public Chain currentChain;
-		public EvolutionChainRoot evolutionChainRoot;
-		public List<int> evolutionChainIds;
+		public PokemonSpecies[] pokemonSpeciesArray = new PokemonSpecies[3];
+		public Texture2D[] speciesTextures = new Texture2D[3];
+		public MainCardInfo[] mainCardItems = new MainCardInfo[3];
 
 		private string initialPokemonResultsJson;
 		private string pokemonFromApiJson;
-		private PokemonCard[] evolutionItems;
+		private string speciesUrl;
 
-		//private string pcName;
-		//private string pcExp;
-		//private string textureUrl;
-		//private int parentIndex;
-		//private Texture2D pcTexture;
+		private void OnEnable() => PokemonCardMain.OnSetPokemonEvolutions += RaiseSetPokemonEvolutions;
+		private void OnDisable() => PokemonCardMain.OnSetPokemonEvolutions -= RaiseSetPokemonEvolutions;
 
 		private void Start()
 		{
@@ -80,8 +72,9 @@ namespace Pokemon.API
 
 			var pcName = pokemon.name;
 			var pcExp = pokemon.base_experience.ToString();
+			var pcSpeciesUrl = pokemon.species.url;
 
-			var textureUrl = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon.id}.png";
+			var textureUrl = $"{textureUrlPrefix}{pokemon.id}.png";
 			var pcTexture = await GetPokemonTexture(textureUrl);
 
 			if (pokemonsCounter < maxPanelItems) parentIndex = 0;
@@ -96,17 +89,19 @@ namespace Pokemon.API
 			pc.nameText.text = pcName;
 			pc.exp.text = pcExp;
 			pc.image.texture = pcTexture;
-
-			//if (pokemon != null) await InstantiatePokemonCard(pokemon);
-
-			//if(!string.IsNullOrEmpty(pokemon.species.url)) 
-			//	await GetPokemonEvolutions(pokemon.species.url);
+			pc.speciesUrl = pcSpeciesUrl;
 		}
 
 		private async Task<Texture2D> GetPokemonTexture(string url)
 		{
 			var pokemonTextureRequest = await UnityWebRequestTexture.GetTexture(url).SendWebRequest();
-			return pokeTexture = ((DownloadHandlerTexture)pokemonTextureRequest.downloadHandler).texture;
+			pokeTexture = ((DownloadHandlerTexture)pokemonTextureRequest.downloadHandler).texture;
+			if (pokeTexture != null) return pokeTexture;
+			else
+			{
+				Debug.Log("*** problem with poke texture");
+				return null;
+			}
 		}
 
 		private async UniTask<Pokemon> GetPokemonFromSpeciesUrl(string stringSuffix)
@@ -118,176 +113,69 @@ namespace Pokemon.API
 			return pokemonFromSpecies;
 		}
 
-		private async UniTask GetPokemonEvolutions(string url)
+		private async UniTask<PokemonSpecies> GetPokemonSpecies(string url)
+		{
+			var json = (await UnityWebRequest.Get(url).SendWebRequest()).downloadHandler.text;
+			var pokemonSpecies = JsonConvert.DeserializeObject<PokemonSpecies>(json);
+			
+			return pokemonSpecies;
+		}
+
+		private void RaiseSetPokemonEvolutions(string url)
+		{
+			speciesUrl = url;
+			Invoke(nameof(SetPokemonEvolutions), 0.1f);
+		}
+
+		private async Task SetPokemonEvolutions() => await GetPokemonEvolutions(speciesUrl);
+
+		private async Task GetPokemonEvolutions(string url)
 		{
 			var pokemonSpeciesJson =
 				(await UnityWebRequest.Get(url).SendWebRequest()).downloadHandler.text;
 
-			pokemonSpecies = JsonConvert.DeserializeObject<PokemonSpecies>(pokemonSpeciesJson);
+			var pokemonSpecies = JsonConvert.DeserializeObject<PokemonSpecies>(pokemonSpeciesJson);
 
 			// Get and Set Evolution chain root
 			var evolutionChainJson =
 				(await UnityWebRequest.Get(pokemonSpecies.evolution_chain.url).SendWebRequest()).downloadHandler.text;
 
-			evolutionChainRoot = JsonConvert.DeserializeObject<EvolutionChainRoot>(evolutionChainJson);
+			var evolutionChainRoot = JsonConvert.DeserializeObject<EvolutionChainRoot>(evolutionChainJson);
 
-			// If list contains id, it means the pokemons were already created, return
-			if (evolutionChainIds.Contains(evolutionChainRoot.id)) return;
+			var currentChain = evolutionChainRoot.chain;
 
-			evolutionChainIds.Add(evolutionChainRoot.id);
-			pokeChainsCount++;
-			Debug.Log("evolution chain id: " + evolutionChainRoot.id);
-			Debug.Log("chains count: " + pokeChainsCount);
+			string url0, url1, url2;
+
+			url0 = currentChain.species.url;
+			await SetNewCardItem(url0,0);
+
+			if (currentChain.evolves_to.Count > 0)
+			{
+				mainCardItems[1].gameObject.SetActive(true);
+				url1 = currentChain.evolves_to[0].species.url;
+				await SetNewCardItem(url1, 1);
+
+				if (currentChain.evolves_to[0].evolves_to.Count > 0)
+				{
+					mainCardItems[2].gameObject.SetActive(true);
+					url2 = currentChain.evolves_to[0].evolves_to[0].species.url;
+					await SetNewCardItem(url2, 2);
+				}
+				else mainCardItems[2].gameObject.SetActive(false);
+			}
+			else mainCardItems[1].gameObject.SetActive(false);
+
+			async Task SetNewCardItem(string url, int index)
+			{
+				var newSpecies = await GetPokemonSpecies(url);
+
+				var textureUrl = $"{textureUrlPrefix}{newSpecies.id}.png";
+				var newTexture = await GetPokemonTexture(textureUrl);
+
+				mainCardItems[index].nameText.text = newSpecies.name;
+				mainCardItems[index].idText.text = newSpecies.id.ToString();
+				mainCardItems[index].image.texture = newTexture;
+			}
 		}
-
-
-
-		//private async UniTask InstantiatePokemonCard(Pokemon pokemon)
-		//{
-		//	pokemonsCounter++;
-		//	parentIndex = 0;
-
-		//	pcName = pokemon.name;
-		//	pcExp = pokemon.base_experience.ToString();
-
-		//	textureUrl = pokemon.sprites.front_default;
-		//	pcTexture = await GetPokemonTexture(textureUrl);
-
-		//	if (pokemonsCounter < maxPanelItems) parentIndex = 0;
-		//	else if (pokemonsCounter < (maxPanelItems * 2)) parentIndex = 1;
-		//	else if (pokemonsCounter < (maxPanelItems * 3)) parentIndex = 2;
-		//	else Debug.Log("*** Check out if poke chains count and max panel items");
-
-		//	pokemonCardGameobject = Instantiate(pokemonCard, parentHandlers[parentIndex].transform);
-		//	parentHandlers[parentIndex].AddPokemonToList(pokemonCardGameobject);
-
-		//	PokemonCard pc = pokemonCard.GetComponent<PokemonCard>();
-		//	pc.nameText.text = pcName;
-		//	pc.exp.text = pcExp;
-		//	pc.image.texture = pcTexture;
-		//}
-
-		//private void InstantiatePokemonCards()
-		//{
-
-		//	foreach (var item in parentHandlers)
-		//	{
-		//		if (item == null) Debug.LogError("*** Parent handler is null ");
-		//	}
-
-		//	if (pokeChainsCount < maxPanelItems)
-		//	{
-		//		pokemonCardGameobject = Instantiate(pokemonCard, parentHandlers[0].transform);
-		//		parentHandlers[0].AddPokemonToList(pokemonCardGameobject);
-		//	}
-		//	else if (pokeChainsCount < (maxPanelItems * 2))
-		//	{
-		//		pokemonCardGameobject = Instantiate(pokemonCard, parentHandlers[1].transform);
-		//		parentHandlers[1].AddPokemonToList(pokemonCardGameobject);
-		//	}
-		//	else if (pokeChainsCount < (maxPanelItems * 3))
-		//	{
-		//		pokemonCardGameobject = Instantiate(pokemonCard, parentHandlers[2].transform);
-		//		parentHandlers[2].AddPokemonToList(pokemonCardGameobject);
-		//	}
-		//	else Debug.Log("*** Check out if poke chains count and max panel items");
-
-
-		//}
-
-		//currentChain = evolutionChainRoot.chain;
-		//int chainItemsCounter = 0;
-		//string url0, url1, url2;
-
-		//url0 = currentChain.species.name;
-		//await GetPokemonEvolutionObjects(url0, 0);
-
-
-		//if (currentChain.evolves_to.Count > 0)
-		//{
-		//	url1 = currentChain.evolves_to[0].species.name;
-		//	await GetPokemonEvolutionObjects(url1, 1);
-
-		//	if (currentChain.evolves_to[0].evolves_to.Count > 0)
-		//	{
-		//		url2 = currentChain.evolves_to[0].evolves_to[0].species.name;
-		//		await GetPokemonEvolutionObjects(url2, 2);
-		//	}
-		//}
-
-		//await InstantiatePokemonEvolutions();
-
-		//async Task InstantiatePokemonEvolutions()
-		//{
-		//	foreach (var item in parentHandlers)
-		//	{
-		//		if (item == null) Debug.LogError("*** Parent handler is null ");
-		//	}
-
-		//	if (pokeChainsCount < maxPanelItems)
-		//	{
-		//		pokemonCardGameobject = Instantiate(pokemonCard, parentHandlers[0].transform);
-		//		parentHandlers[0].AddPokemonToList(pokemonCardGameobject);
-		//	}
-		//	else if (pokeChainsCount < (maxPanelItems * 2))
-		//	{
-		//		pokemonCardGameobject = Instantiate(pokemonCard, parentHandlers[1].transform);
-		//		parentHandlers[1].AddPokemonToList(pokemonCardGameobject);
-		//	}
-		//	else if (pokeChainsCount < (maxPanelItems * 3))
-		//	{
-		//		pokemonCardGameobject = Instantiate(pokemonCard, parentHandlers[2].transform);
-		//		parentHandlers[2].AddPokemonToList(pokemonCardGameobject);
-		//	}
-		//	else Debug.Log("*** Check out if poke chains count and max panel items");
-
-		//	await SetPokemonEvolutionsItems();
-		//}
-
-		//async Task SetPokemonEvolutionsItems()
-		//{
-		//	evolutionItems = pokemonCardGameobject.GetComponent<PokemonEvolutions>().GetPokemonCardItems();
-		//	for (int i = 0; i < chainItemsCounter; i++)
-		//	{
-		//		evolutionItems[i].gameObject.SetActive(true);
-		//		evolutionItems[i].GetComponent<PokemonCard>().nameText.text = tempPokemons[i].name;
-		//		evolutionItems[i].GetComponent<PokemonCard>().exp.text = tempPokemons[i].base_experience.ToString();
-
-		//		var textureUrl = tempPokemons[i].sprites.front_default;
-		//		evolutionItems[i].GetComponent<PokemonCard>().image.texture = await GetPokemonTexture(textureUrl);
-
-		//		if (isCardInit == false)
-		//		{
-		//			isCardInit = true;
-
-		//			// Set PokemonMainCard data for the first time
-		//			pokeRawImage.texture = await GetPokemonTexture(pokemon.sprites.front_default);
-
-		//			pokemonCardMain2.SetPokemonCardMainData(
-		//				pokemon.name,
-		//				pokemon.base_experience.ToString(), 
-		//				pokeRawImage);
-		//		}
-
-		//	}
-		//}
-
-		//// Create Pokemon evolution objects
-		//async Task GetPokemonEvolutionObjects(string url, int index)
-		//{
-		//	chainItemsCounter++;
-		//	var newPokemon = await GetPokemonFromSpeciesUrl(url);
-
-		//	if (pokemon != null)
-		//	{
-		//		tempPokemons[index] = newPokemon;
-		//		Debug.Log("pokemon name: " + newPokemon.name + ", index: " + index);
-		//	}
-		//}
-
-
-
-
-
 	}
 }

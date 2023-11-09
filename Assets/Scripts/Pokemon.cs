@@ -18,18 +18,12 @@ namespace Pokemon.API
 		public List<Moves> moves { get; set; }
 		public string name { get; set; }
 		public int order { get; set; }
-		//public List<PastAbilities> past_abilities;
-		//public List<PastTypes> past_types;
 		public BasicInfo species { get; set; }
 		public Sprites sprites { get; set; }
 		public List<Stats> stats { get; set; }
 		public List<Types> types { get; set; }
 		public int weight { get; set; }
 	}
-
-	[Serializable] public class PastAbilities { }
-
-	[Serializable] public class PastTypes { }
 
 	[Serializable]
 	public class Chain
@@ -273,5 +267,11 @@ namespace Pokemon.API
 		public object baby_trigger_item { get; set; }
 		public Chain chain { get; set; }
 		public int id { get; set; }
+	}
+
+	public struct PokeCardInfo
+	{
+		public string name;
+		public int base_happiness;
 	}
 }
